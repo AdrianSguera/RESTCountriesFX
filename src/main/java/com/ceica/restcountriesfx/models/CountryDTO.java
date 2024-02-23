@@ -1,20 +1,11 @@
 package com.ceica.restcountriesfx.models;
 
 public class CountryDTO {
-    private String name, region, flag, coin;
+    private String name, region, flag, coin, cca3;
     private String[] capital;
     private int population;
 
     public CountryDTO() {
-    }
-
-    public CountryDTO(String name, String region, String flag, String coin, String[] capital, int population) {
-        this.name = name;
-        this.region = region;
-        this.flag = flag;
-        this.coin = coin;
-        this.capital = capital;
-        this.population = population;
     }
 
     public String getName() {
@@ -65,14 +56,26 @@ public class CountryDTO {
         this.population = population;
     }
 
+    public String getCca3() {
+        return cca3;
+    }
+
+    public void setCca3(String cca3) {
+        this.cca3 = cca3;
+    }
+
     public static CountryDTO fromCountryDAO(CountryDAO countryDAO){
         CountryDTO countryDTO = new CountryDTO();
         countryDTO.setName(countryDAO.name.common);
         countryDTO.setFlag(countryDAO.flags.png);
         countryDTO.setPopulation(countryDAO.population);
         countryDTO.setCapital(countryDAO.capital);
-        String keySet =(String) countryDAO.currencies.keySet().toArray()[0];
-        countryDTO.setCoin(countryDAO.currencies.get(keySet).name);
+        countryDTO.setCca3(countryDAO.cca3);
+        if (countryDAO.currencies!=null) {
+            String keySet = (String) countryDAO.currencies.keySet().toArray()[0];
+            countryDTO.setCoin(countryDAO.currencies.get(keySet).name);
+        } else
+            countryDTO.setCoin("none");
         return countryDTO;
     }
 }

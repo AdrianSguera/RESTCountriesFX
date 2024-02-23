@@ -1,7 +1,6 @@
 package com.ceica.restcountriesfx;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

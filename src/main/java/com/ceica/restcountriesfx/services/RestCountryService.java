@@ -5,13 +5,14 @@ import com.ceica.restcountriesfx.models.CountryDTO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
+import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RestCountryService implements IRestCountry {
     @Override
@@ -35,38 +36,46 @@ public class RestCountryService implements IRestCountry {
         String data = getFromApi("https://restcountries.com/v3.1/region/" + region);
         Gson gson = new Gson();
         List<CountryDAO> countriesDAO = gson.fromJson(data, new TypeToken<List<CountryDAO>>(){}.getType());
-        List<CountryDTO> countriesDTO = new ArrayList<>();
-        for (CountryDAO country : countriesDAO)
-            countriesDTO.add(CountryDTO.fromCountryDAO(country));
-        return countriesDTO;
-    }
-
-    @Override
-    public CountryDTO getCountryByName(String name) {
+        if (countriesDAO != null) {
+            return countriesDAO.stream()
+                    .map(CountryDTO::fromCountryDAO)
+                    .collect(Collectors.toList());
+        }
         return null;
     }
 
+    @Override
+    public CountryDTO getCountryByCca3(String cca3) {
+        String data = getFromApi("https://restcountries.com/v3.1/alpha/" + cca3);
+        Gson gson = new Gson();
+        CountryDAO[] countries = gson.fromJson(data, CountryDAO[].class);
+        return CountryDTO.fromCountryDAO(countries[0]);
+    }
+
     private static String getFromApi(String petition) {
+        HttpClient httpClient = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_2)
+                .build();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(petition))
+                .build();
         try {
-            URL url = new URI(petition).toURL();
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String line;
-            StringBuilder response = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-            reader.close();
-            return response.toString();
-        } catch (Exception e) {
+            return httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static void main(String[] args) {
-        RestCountryService restCountryService = new RestCountryService();
-        System.out.println(restCountryService.getRegions());
+    public List<CountryDTO> getCountryByName(String name) {
+        String data = getFromApi("https://restcountries.com/v3.1/name/" + name);
+        Gson gson = new Gson();
+        List<CountryDAO> countriesDAO = gson.fromJson(data, new TypeToken<List<CountryDAO>>(){}.getType());
+        if (countriesDAO != null) {
+            return countriesDAO.stream()
+                    .map(CountryDTO::fromCountryDAO)
+                    .collect(Collectors.toList());
+        }
+        return null;
     }
 }

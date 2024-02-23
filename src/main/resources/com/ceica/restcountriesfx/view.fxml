@@ -5,11 +5,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ceica.restcountriesfx.ViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #D1CFCD;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ceica.restcountriesfx.ViewController">
    <children>
       <ComboBox fx:id="comboBoxRegions" layoutX="14.0" layoutY="14.0" prefWidth="150.0" promptText="Regions" />
       <TableView fx:id="tableView" layoutX="14.0" layoutY="57.0" prefHeight="329.0" prefWidth="300.0">
@@ -23,5 +23,6 @@
       <Label fx:id="lblPopulation" layoutX="356.0" layoutY="318.0" />
       <Label fx:id="lblCapital" layoutX="356.0" layoutY="355.0" />
       <Button layoutX="534.0" layoutY="14.0" mnemonicParsing="false" onAction="#onCancel" text="Cancel" />
+      <TextField fx:id="txtSearch" layoutX="164.0" layoutY="14.0" promptText="Search..." />
    </children>
 </AnchorPane>
